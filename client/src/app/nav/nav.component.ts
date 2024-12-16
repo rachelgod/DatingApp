@@ -3,12 +3,20 @@ import { FormsModule } from '@angular/forms';
 import { AccountService } from '../_services/account.service';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { TitleCasePipe } from '@angular/common';
 //import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [FormsModule, BsDropdownModule, RouterLink, RouterLinkActive],
+  imports: [
+    FormsModule,
+    BsDropdownModule,
+    RouterLink,
+    RouterLinkActive,
+    TitleCasePipe,
+  ],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css',
 })
@@ -17,18 +25,21 @@ export class NavComponent {
   // loggedIn = false;
   accountService = inject(AccountService);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   model: any = {};
 
   login() {
     console.log(this.model);
     this.accountService.login(this.model).subscribe({
+      // next: _ => {  // ignore ret val
       next: () => {
         this.router.navigateByUrl('/members');
+        // void this.router.navigateByUrl('/members'); // void will ignore promise returned
         // console.log(response);
         // this.loggedIn = true;
       },
-      error: (error) => console.log(error),
+      error: (error) => this.toastr.error(error.error),
     });
   }
 
