@@ -19,32 +19,34 @@ public class AccountController(DataContext context, ITokenService tokenService) 
     {
         using var hmac = new HMACSHA512();
 
-        if(await UserExists(registerDto.Username)) return BadRequest("Username is taken");
+        if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
 
-        var user = new AppUser
-        {
-            UserName = registerDto.Username.ToLower(), 
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)), 
-            PasswordSalt = hmac.Key
-        };
+        return Ok();
 
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
+        // var user = new AppUser
+        // {
+        //     UserName = registerDto.Username.ToLower(), 
+        //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)), 
+        //     PasswordSalt = hmac.Key
+        // };
 
-        return new UserDto{
-            Username = user.UserName,
-            Token = tokenService.CreateToken(user)
-        };
+        // context.Users.Add(user);
+        // await context.SaveChangesAsync();
+
+        // return new UserDto{
+        //     Username = user.UserName,
+        //     Token = tokenService.CreateToken(user)
+        // };
     }
-    
+
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => 
+        var user = await context.Users.FirstOrDefaultAsync(x =>
                     x.UserName.ToLower() == loginDto.Username.ToLower());
-        
+
         if (user == null) return Unauthorized("Invalid username");
-        
+
         using var hmac = new HMACSHA512(user.PasswordSalt);
 
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
@@ -54,7 +56,8 @@ public class AccountController(DataContext context, ITokenService tokenService) 
             if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
         }
 
-        return new UserDto{
+        return new UserDto
+        {
             Username = user.UserName,
             Token = tokenService.CreateToken(user)
         };
