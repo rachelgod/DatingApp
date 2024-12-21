@@ -38,9 +38,9 @@ public class AppUser
 
     public List<Photo> Photos { get; set; } = [];
 
-    public int GetAge()
-    {
-        return DateOfBirth.CaclulateAge();
-    }
+    // public int GetAge()
+    // {
+    //     return DateOfBirth.CaclulateAge();
+    // }
 
 }

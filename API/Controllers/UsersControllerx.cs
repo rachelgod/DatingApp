@@ -9,7 +9,7 @@ namespace API.Controllers;
 
 // /api/users
 //[Authorize]
-public class UsersController(DataContext context) : BaseApiController
+public class UsersControllerx(DataContext context) : BaseApiController
 {
     [AllowAnonymous]
     [HttpGet]
