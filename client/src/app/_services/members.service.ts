@@ -9,28 +9,29 @@ import { AccountService } from './account.service';
 })
 export class MembersService {
   private http = inject(HttpClient);
-  private accountService = inject(AccountService);
   baseUrl = environment.apiUrl;
+
+  //private accountService = inject(AccountService);
 
   getMembers() {
     return this.http.get<Member[]>(
-      this.baseUrl + 'users',
-      this.getHttpOtions()
+      this.baseUrl + 'users'
+      // , this.getHttpOtions()
     );
   }
 
   getMember(username: string) {
     return this.http.get<Member>(
-      this.baseUrl + 'users/' + username,
-      this.getHttpOtions()
+      this.baseUrl + 'users/' + username
+      // , this.getHttpOtions()
     );
   }
 
-  getHttpOtions() {
-    return {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.accountService.currentUser()?.token}`,
-      }),
-    };
-  }
+  // getHttpOtions() {
+  //   return {
+  //     headers: new HttpHeaders({
+  //       Authorization: `Bearer ${this.accountService.currentUser()?.token}`,
+  //     }),
+  //   };
+  // }
 }
